@@ -1,0 +1,8 @@
+en:
+  welcome: "Welcome to Calculator! Enter your name:"
+  valid_name: "Make sure to enter a valid name."
+  valid_number: "Hmm...that doesn't look like a valid number."
+es:
+  welcome: "Bienvenido a la calculadora! Entre su nombre:"
+  valid_name: "Asegúrese de entrar un nombre válido."
+  valid_number: "Hmm ... eso no parece un número válido."
