@@ -44,7 +44,7 @@ end
 prompt(messages('welcome', LANGUAGE))
 name = ''
 loop do
-  name = Kernerl.gets().chomp()
+  name = Kernel.gets().chomp()
 
   if name.empty?()
     prompt(messages('valid_name', LANGUAGE))
