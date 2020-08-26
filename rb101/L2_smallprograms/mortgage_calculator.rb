@@ -25,7 +25,7 @@ prompt("Hi! Welcome to your friendly neighborhood Mortage Calculator.")
 loop do
   loan_amount = nil
   loop do
-    prompt("Please enter the total amount of your loan: (For example, enter 80000 for an $80,000 loan.)")
+    prompt("Please enter the total amount of your loan: \n(For example, enter 80000 for an $80,000 loan.)")
     loan_amount = gets.chomp
 
     if valid_number?(loan_amount)
@@ -37,7 +37,7 @@ loop do
 
   apr = nil
   loop do
-    prompt("Please enter the Annual Percentage Rate (APR) of your loan: (For example, enter 12.5 for an APR of 12.5%)")
+    prompt("Please enter the Annual Percentage Rate (APR) of your loan: \n(For example, enter 12.5 for an APR of 12.5%)")
     apr = gets.chomp
 
     if valid_number?(apr)
@@ -49,7 +49,7 @@ loop do
 
   loan_duration = nil
   loop do
-    prompt("Please enter the duration of the loan in months: (For example, enter 12 if the loan is 1 year.)")
+    prompt("Please enter the duration of the loan in months: \n(For example, enter 12 if the loan is 1 year.)")
     loan_duration = gets.chomp
 
     if integer?(loan_duration)
