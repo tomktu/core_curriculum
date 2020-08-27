@@ -78,3 +78,5 @@ loop do
   answer = gets.chomp.downcase
   break unless answer == 'y'
 end
+
+prompt("Thank you for using the Mortgage Calculator. Good bye!")
