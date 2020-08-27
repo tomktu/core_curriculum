@@ -1,10 +1,6 @@
-# ask user for the loan amount, APR, and loan duration
-# convert APR to monthly interest rate
-# convert loan duration to months
-# calculate monthly payment
-# output monthly payment back to user
+require 'yaml'
 
-def clear_screen()
+def clear_screen
   system('clear') || system('cls')
 end
 
@@ -24,59 +20,101 @@ def valid_number?(input)
   integer?(input) || float?(input)
 end
 
-clear_screen
-prompt("Hi! Welcome to your friendly neighborhood Mortage Calculator.")
-
-loop do
-  loan_amount = nil
+def retrieve_loan_amount
   loop do
-    prompt("Please enter the total amount of your loan: \n(For example, enter 80000 for an $80,000 loan.)")
+    prompt(MESSAGES['loan_amount'])
     loan_amount = gets.chomp
 
     if valid_number?(loan_amount)
-      break
+      if loan_amount.to_f <= 0
+        prompt(MESSAGES['no_negative_numbers'])
+      else
+        return loan_amount
+      end
     else
-      prompt("Hmm...that doesn't look like a valid number. Please try again.")
+      prompt(MESSAGES['valid_number'])
     end
   end
+end
 
-  apr = nil
+def retrieve_apr_amount
   loop do
-    prompt("Please enter the Annual Percentage Rate (APR) of your loan: \n(For example, enter 12.5 for an APR of 12.5%)")
+    prompt(MESSAGES['annual_percentage_rate'])
     apr = gets.chomp
 
     if valid_number?(apr)
-      break
+      if apr.to_f <= 0
+        prompt(MESSAGES['no_negative_numbers'])
+      else
+        return apr
+      end
     else
-      prompt("Hmm...that doesn't look like a valid number. Please try again.")
+      prompt(MESSAGES['valid_number'])
     end
   end
+end
 
-  loan_duration = nil
+def retrieve_loan_duration
   loop do
-    prompt("Please enter the duration of the loan in months: \n(For example, enter 12 if the loan is 1 year.)")
+    prompt(MESSAGES['loan_duration'])
     loan_duration = gets.chomp
 
     if integer?(loan_duration)
-      break
+      if loan_duration.to_i <= 0
+        prompt(MESSAGES['no_negative_numbers'])
+      else
+        return loan_duration
+      end
     else
-      prompt("Hmm...that doesn't look like a valid integer. Please try again.")
+      prompt(MESSAGES['valid_number'])
     end
   end
+end
 
-  prompt("Thank you! Calculating the monthly payment for a $#{loan_amount} loan with an APR of #{apr}% and loan duration of #{loan_duration} months...")
+def calculate_monthly_payment(loan_amount, monthly_interest_rate, loan_duration)
+  loan_amount * (monthly_interest_rate / (1 -
+  (1 + monthly_interest_rate)**(-loan_duration)))
+end
+
+def another_calculation?
+  choice = nil
+  loop do
+    prompt(MESSAGES['again?'])
+    choice = gets.chomp.downcase
+
+    break if %w(y n).include?(choice)
+
+    prompt(MESSAGES['invalid_choice'])
+  end
+
+  choice == 'y'
+end
+
+MESSAGES = YAML.load_file('mortgage_calculator.yml')
+
+clear_screen
+prompt(MESSAGES['welcome'])
+
+loop do
+  loan_amount = retrieve_loan_amount
+  apr = retrieve_apr_amount
+  loan_duration = retrieve_loan_duration
+
+  prompt("Thank you! Calculating the monthly payment for a $#{loan_amount}"\
+         " loan with an APR of #{apr}% and loan duration of #{loan_duration}"\
+         " months...")
 
   monthly_interest_rate = apr.to_f / 12 / 100
   loan_amount = loan_amount.to_f
   loan_duration = loan_duration.to_i
 
-  monthly_payment = loan_amount * (monthly_interest_rate / (1 - (1 + monthly_interest_rate)**(-loan_duration)))
+  monthly_payment = calculate_monthly_payment(loan_amount,
+                                              monthly_interest_rate,
+                                              loan_duration)
 
   prompt("Your monthly payment is $#{monthly_payment.round(2)}.")
 
-  prompt("Do you want to make another calculation? (Enter Y to make another calculation)")
-  answer = gets.chomp.downcase
-  break unless answer == 'y'
+  break unless another_calculation?
 end
 
-prompt("Thank you for using the Mortgage Calculator. Good bye!")
+prompt(MESSAGES['goodbye'])
