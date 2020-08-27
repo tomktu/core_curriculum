@@ -4,6 +4,10 @@
 # calculate monthly payment
 # output monthly payment back to user
 
+def clear_screen()
+  system('clear') || system('cls')
+end
+
 def prompt(message)
   puts "=> #{message}"
 end
@@ -20,6 +24,7 @@ def valid_number?(input)
   integer?(input) || float?(input)
 end
 
+clear_screen
 prompt("Hi! Welcome to your friendly neighborhood Mortage Calculator.")
 
 loop do
