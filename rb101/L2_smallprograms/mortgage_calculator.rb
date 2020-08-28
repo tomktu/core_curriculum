@@ -76,6 +76,16 @@ def calculate_monthly_payment(loan_amount, monthly_interest_rate, loan_duration)
   (1 + monthly_interest_rate)**(-loan_duration)))
 end
 
+def display_calculation_forming(loan_amount, apr, loan_duration)
+  prompt("Thank you! Calculating the monthly payment for a $#{loan_amount}"\
+         " loan with an APR of #{apr}% and loan duration of #{loan_duration}"\
+         " months...")
+end
+
+def display_monthly_payment(monthly_payment)
+  prompt("Your monthly payment is $#{monthly_payment.round(2)}.")
+end
+
 def another_calculation?
   choice = nil
   loop do
@@ -100,9 +110,7 @@ loop do
   apr = retrieve_apr_amount
   loan_duration = retrieve_loan_duration
 
-  prompt("Thank you! Calculating the monthly payment for a $#{loan_amount}"\
-         " loan with an APR of #{apr}% and loan duration of #{loan_duration}"\
-         " months...")
+  display_calculation_forming(loan_amount, apr, loan_duration)
 
   monthly_interest_rate = apr.to_f / 12 / 100
   loan_amount = loan_amount.to_f
@@ -112,7 +120,7 @@ loop do
                                               monthly_interest_rate,
                                               loan_duration)
 
-  prompt("Your monthly payment is $#{monthly_payment.round(2)}.")
+  display_monthly_payment(monthly_payment)
 
   break unless another_calculation?
 end
