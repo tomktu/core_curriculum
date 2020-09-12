@@ -1,0 +1,5 @@
+welcome: "Welcome to a game of Rock, Paper, Scissors...Lizard and Spock!"
+goodbye: "Thank you for playing. Good bye!"
+invalid_choice: "That's not a valid choice."
+again?: "Do you want to play again? (Enter Y to play again, N to exit the game)"
+test: "Choose one: #{VALID_CHOICES.join(', ')}"
