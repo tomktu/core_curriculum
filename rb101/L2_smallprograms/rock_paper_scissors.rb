@@ -118,6 +118,8 @@ loop do
     user_choice = retrieve_user_choice
     computer_choice = VALID_CHOICES.sample
 
+    clear_screen
+    
     display_choices(user_choice, computer_choice)
     display_results(user_choice, computer_choice)
 
