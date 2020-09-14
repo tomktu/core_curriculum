@@ -38,7 +38,7 @@ end
 def retrieve_user_choice
   loop do
     prompt(MESSAGES['choose_move'])
-    choice = gets.chomp
+    choice = gets.chomp.downcase
 
     if VALID_CHOICES.include?(choice)
       return choice
@@ -119,7 +119,7 @@ loop do
     computer_choice = VALID_CHOICES.sample
 
     clear_screen
-    
+
     display_choices(user_choice, computer_choice)
     display_results(user_choice, computer_choice)
 
