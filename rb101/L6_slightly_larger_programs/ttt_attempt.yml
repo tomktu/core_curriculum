@@ -1,0 +1,5 @@
+welcome: "Welcome to a game of Tic Tac Toe!"
+game_start: "Who will be the first to connect three in a row?"
+make_move: "Please mark a square on the board. To mark a square, use the index guidelines. Example: enter 01 if you want to mark a square located in the first row, second column of the board. Your choices are marked with an 'x', computer's choices are marked with 'o'"
+invalid_choice: "That was not a valid entry. Please try again."
+square_marked: "That square is already marked. Please try again."
