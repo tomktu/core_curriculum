@@ -82,6 +82,22 @@ def display_choices(user_choice, computer_choice)
   prompt("You chose to mark at location #{user_choice}; computer chose to mark at location #{computer_choice}")
 end
 
+def rotate_board(board)
+  rotated_board = []
+
+  board.each_with_index do |_, c_index|
+    rotated_row = []
+
+    board.each_with_index do |_, r_index|
+      r_index = -1 - r_index
+      rotated_row << board[r_index][c_index]
+    end
+
+    rotated_board << rotated_row
+  end
+
+  rotated_board
+end
 
 def calculate_winner(board)
   user_connect = 'XXX'
@@ -95,8 +111,39 @@ def calculate_winner(board)
     end
   end
 
-  
+  diagonal = ''
+  board.each_with_index do |row, index|
+    diagonal << row[index]
+  end
 
+  if diagonal == user_connect
+    return 'user'
+  elsif diagonal == computer_connect
+    return 'computer'
+  end
+
+  rotated_board = rotate_board(board)
+
+  rotated_board.each do |row|
+    if row.join('') == user_connect
+      return 'user'
+    elsif row.join('') == computer_connect
+      return 'computer'
+    end
+  end
+
+  diagonal = ''
+  rotated_board.each_with_index do |row, index|
+    diagonal << row[index]
+  end
+
+  if diagonal == user_connect
+    return 'user'
+  elsif diagonal == computer_connect
+    return 'computer'
+  end
+
+  nil
 end
 
 def board_full?(board)
