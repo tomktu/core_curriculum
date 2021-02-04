@@ -14,32 +14,33 @@ def prompt(message)
 end
 
 def display_game_start
-  promt(MESSAGES['game_start'])
+  prompt(MESSAGES['game_start'])
 end
 
 def display_board(board)
   result_str = "  0 1 2\n"
 
-  board.each_with_index do |row, index|
-    result_str << "#{index} "
+  board.each_with_index do |row, r_index|
+    result_str << "#{r_index} "
 
-    row.each_with_index do |square, index|
-      if index == row.length - 1
+    row.each_with_index do |square, s_index|
+      if s_index == row.length - 1
         result_str << "#{square}\n"
       else
         result_str << "#{square}|"
       end
     end
 
-    result_str << "  _ _ _\n" if index != board.length - 1
+    result_str << "  _ _ _\n" if r_index != board.length - 1
   end
 
   puts result_str
 end
 
 def retrieve_user_choice(board)
+  prompt(MESSAGES['make_move'])
+
   loop do
-    prompt(MESSAGES['make_move'])
     choice = gets.chomp
 
     if VALID_CHOICES.include?(choice)
@@ -65,21 +66,22 @@ end
 def square_empty?(board, choice)
   row, column = choice.split('')
 
-  board[row][column] == ' '
+  board[row.to_i][column.to_i] == ' '
 end
 
 def mark_move(board, choice, player)
   row, column = choice.split('')
 
   if player == 'user'
-    board[row][column] = 'X'
+    board[row.to_i][column.to_i] = 'X'
   elsif player == 'computer'
-    board[row][column] = 'O'
+    board[row.to_i][column.to_i] = 'O'
   end
 end
 
-def display_choices(user_choice, computer_choice)
-  prompt("You chose to mark at location #{user_choice}; computer chose to mark at location #{computer_choice}")
+def display_moves(user_choice, computer_choice)
+  prompt("You chose to mark at location #{user_choice}; computer"\
+    " chose to mark at location #{computer_choice}")
 end
 
 def rotate_board(board)
@@ -148,41 +150,84 @@ end
 
 def board_full?(board)
   board.all? do |row|
-    row.all? {|square| square != ' '}
+    row.all? { |square| square != ' ' }
   end
 end
 
+def display_tie_message
+  prompt(MESSAGES['tie'])
+end
+
+def display_user_won
+  prompt(MESSAGES['victory'])
+end
+
+def display_user_lost
+  prompt(MESSAGES['defeat'])
+end
+
+def display_welcome
+  prompt(MESSAGES['welcome'])
+end
+
+def display_goodbye
+  prompt(MESSAGES['goodbye'])
+end
+
+def play_again?
+  answer = nil
+  loop do
+    prompt(MESSAGES['again?'])
+    answer = gets.chomp.downcase
+
+    break if %w(y n).include?(answer)
+
+    prompt(MESSAGES['invalid_choice'])
+  end
+
+  answer == 'y'
+end
+
 clear_screen
-prompt(MESSAGES['welcome'])
+display_welcome
 
 loop do
   winner = nil
   tie = nil
   board = [
-            [' ',' ',' '],
-            [' ',' ',' '],
-            [' ',' ',' ']
+            [' ', ' ', ' '],
+            [' ', ' ', ' '],
+            [' ', ' ', ' ']
           ]
 
-  dispay_game_start
+  display_game_start
   display_board(board)
 
   loop do
     user_choice = retrieve_user_choice(board)
     mark_move(board, user_choice, 'user')
 
+    winner = calculate_winner(board)
+    tie = board_full?(board)
+    break if winner || tie
+
     computer_choice = generate_computer_choice(board)
     mark_move(board, computer_choice, 'computer')
 
-    display_choices(user_choice, computer_choice)
+    clear_screen
+    display_moves(user_choice, computer_choice)
     display_board(board)
-
-    winner = calculate_winner(board)
-    tie = board_full?(board)
-
-    break if winner || tie
   end
 
+  display_tie_message if tie
 
+  if winner == 'user'
+    display_user_won
+  elsif winner == 'computer'
+    display_user_lost
+  end
 
+  break unless play_again?
 end
+
+display_goodbye
