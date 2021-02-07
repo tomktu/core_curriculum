@@ -192,6 +192,8 @@ clear_screen
 display_welcome
 
 loop do
+  clear_screen
+  
   winner = nil
   tie = nil
   board = [
@@ -214,17 +216,23 @@ loop do
     computer_choice = generate_computer_choice(board)
     mark_move(board, computer_choice, 'computer')
 
+    winner = calculate_winner(board)
+    tie = board_full?(board)
+    break if winner || tie
+
     clear_screen
     display_moves(user_choice, computer_choice)
     display_board(board)
   end
 
-  display_tie_message if tie
+  display_board(board)
 
   if winner == 'user'
     display_user_won
   elsif winner == 'computer'
     display_user_lost
+  elsif tie
+    display_tie_message
   end
 
   break unless play_again?
