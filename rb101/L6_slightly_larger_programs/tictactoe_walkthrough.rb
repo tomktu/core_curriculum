@@ -1,10 +1,6 @@
-require 'pry'
-
-=begin
------------------------------------------------------------------------------
-CONSTANTS
------------------------------------------------------------------------------
-=end
+#-----------------------------------------------------------------------------
+# CONSTANTS
+#-----------------------------------------------------------------------------
 
 FIRST_MOVER = 'choose'
 INITIAL_MARKER = ' '
@@ -14,11 +10,9 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
                 [[1, 5, 9], [3, 5, 7]]
 
-=begin
------------------------------------------------------------------------------
-METHODS
------------------------------------------------------------------------------
-=end
+#-----------------------------------------------------------------------------
+# METHODS
+#-----------------------------------------------------------------------------
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -84,9 +78,9 @@ end
 
 def computer_places_piece!(brd)
   if win_opportunity?(brd)
-    brd[find_winning_move(brd)] = COMPUTER_MARKER
+    brd[find_winning_move(brd, COMPUTER_MARKER)] = COMPUTER_MARKER
   elsif immediate_threat?(brd)
-    brd[find_threat(brd)] = COMPUTER_MARKER
+    brd[find_winning_move(brd, PLAYER_MARKER)] = COMPUTER_MARKER
   elsif brd[5] == INITIAL_MARKER
     brd[5] = COMPUTER_MARKER
   else
@@ -96,27 +90,16 @@ def computer_places_piece!(brd)
 end
 
 def immediate_threat?(brd)
-  !!find_threat(brd)
-end
-
-def find_threat(brd)
-  WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(PLAYER_MARKER) == 2 &&
-       brd.values_at(*line).count(INITIAL_MARKER) == 1
-      line.each { |key| return key if brd[key] == INITIAL_MARKER }
-    end
-  end
-
-  nil
+  !!find_winning_move(brd, PLAYER_MARKER)
 end
 
 def win_opportunity?(brd)
-  !!find_winning_move(brd)
+  !!find_winning_move(brd, COMPUTER_MARKER)
 end
 
-def find_winning_move(brd)
+def find_winning_move(brd, marker)
   WINNING_LINES.each do |line|
-    if brd.values_at(*line).count(COMPUTER_MARKER) == 2 &&
+    if brd.values_at(*line).count(marker) == 2 &&
        brd.values_at(*line).count(INITIAL_MARKER) == 1
       line.each { |key| return key if brd[key] == INITIAL_MARKER }
     end
@@ -184,11 +167,24 @@ def alternate_player(current_player)
   end
 end
 
-=begin
------------------------------------------------------------------------------
-PROGRAM
------------------------------------------------------------------------------
-=end
+def play_again?
+  choice = ''
+  loop do
+    prompt "Play again? (y or n)"
+    choice = gets.chomp.downcase
+    break if %w(y n).include?(choice)
+    prompt "That was an invalid input. Please try again."
+  end
+  choice == 'y'
+end
+
+def overall_winner?(score)
+  score['Player'] == 5 || score['Computer'] == 5
+end
+
+#-----------------------------------------------------------------------------
+# PROGRAM
+#-----------------------------------------------------------------------------
 
 loop do
   first_mover = FIRST_MOVER == 'choose' ? select_first_mover : FIRST_MOVER
@@ -216,7 +212,7 @@ loop do
       prompt "It's a tie!"
     end
 
-    break if score['Player'] == 5 || score['Computer'] == 5
+    break if overall_winner?(score)
 
     prompt "Next game starting in 3 seconds."
     sleep(3)
@@ -228,9 +224,7 @@ loop do
     prompt "Sorry, the computer reached 5 wins before you."
   end
 
-  prompt "Play again? (y or n)"
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  break unless play_again?
 end
 
 prompt "Thanks for play Tic Tac Toe! Good bye!"
