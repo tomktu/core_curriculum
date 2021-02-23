@@ -122,44 +122,33 @@ end
 #-----------------------------------------------------------------------------
 
 loop do
-  deck = nil
-  dealer = nil
-  player = nil
-  exit_game = false
+  deck = initialize_deck
+  dealer = []
+  player = []
+
+  deal_cards(deck, dealer, player)
+  display_table(dealer, player)
 
   loop do
-    deck = initialize_deck
-    dealer = []
-    player = []
+    choice = hit?
 
-    deal_cards(deck, dealer, player)
-    display_table(dealer, player)
-
-    loop do
-      choice = hit?
-
-      if choice == 'hit'
-        hit(deck, player)
-        display_table(dealer, player)
-      end
-
-      break if choice == 'stay' || busted?(player)
+    if choice == 'hit'
+      hit(deck, player)
+      display_table(dealer, player)
     end
 
-    if busted?(player)
-      show_cards(dealer, player)
-      prompt("Busted. You lose.")
-      next if play_again?
-      exit_game = true
-    else
-      prompt("You chose to stay.")
-      sleep(2)
-    end
-
-    break
+    break if choice == 'stay' || busted?(player)
   end
 
-  break if exit_game
+  if busted?(player)
+    show_cards(dealer, player)
+    prompt("Busted. You lose.")
+    next if play_again?
+    break
+  else
+    prompt("You chose to stay.")
+    sleep(2)
+  end
 
   counter = 0
   loop do
