@@ -75,7 +75,20 @@ def play_again?
   answer.downcase.start_with?('y')
 end
 
+def display_cards_and_total(dealer_cards, dealer_total, player_cards,
+  player_total)
+  puts "=============="
+  prompt "Dealer has #{dealer_cards}, for a total of: #{dealer_total}"
+  prompt "Player has #{player_cards}, for a total of: #{player_total}"
+  puts "=============="
+end
+
+def clear_screen
+  system('clear') || system('cls')
+end
+
 loop do
+  clear_screen
   prompt "Welcome to Twenty-One!"
 
   # initialize vars
@@ -118,6 +131,8 @@ loop do
   end
 
   if busted?(player_total)
+    display_cards_and_total(dealer_cards, dealer_total, player_cards,
+      player_total)
     display_result(dealer_total, player_total)
     play_again? ? next : break
   else
@@ -138,6 +153,8 @@ loop do
 
   if busted?(dealer_total)
     prompt "Dealer total is now: #{dealer_total}"
+    display_cards_and_total(dealer_cards, dealer_total, player_cards,
+      player_total)
     display_result(dealer_total, player_total)
     play_again? ? next : break
   else
@@ -145,11 +162,8 @@ loop do
   end
 
   # both player and dealer stays - compare cards!
-  puts "=============="
-  prompt "Dealer has #{dealer_cards}, for a total of: #{dealer_total}"
-  prompt "Player has #{player_cards}, for a total of: #{player_total}"
-  puts "=============="
-
+  display_cards_and_total(dealer_cards, dealer_total, player_cards,
+    player_total)
   display_result(dealer_total, player_total)
 
   break unless play_again?

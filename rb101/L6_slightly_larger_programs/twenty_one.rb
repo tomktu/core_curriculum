@@ -115,7 +115,7 @@ def play_again?
 end
 
 def clear_screen
-  system('clear')
+  system('clear') || system('cls')
 end
 #-----------------------------------------------------------------------------
 # PROGRAM
