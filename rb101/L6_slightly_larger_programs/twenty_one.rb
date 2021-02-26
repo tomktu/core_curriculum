@@ -61,9 +61,8 @@ def hit(deck, persons_deck)
   persons_deck << deck.pop
 end
 
-def busted?(persons_deck)
-  sum = calculate_sum(persons_deck)
-  sum > 21
+def busted?(sum_cards)
+  sum_cards > 21
 end
 
 def calculate_sum(persons_deck)
@@ -91,8 +90,8 @@ def hit?
   end
 end
 
-def determine_winner(dealer, player)
-  differential = calculate_sum(player) - calculate_sum(dealer)
+def determine_winner(dealer_total, player_total)
+  differential = player_total - dealer_total
 
   if differential == 0
     'tie'
@@ -129,18 +128,22 @@ loop do
   deal_cards(deck, dealer, player)
   display_table(dealer, player)
 
+  dealer_total = calculate_sum(dealer)
+  player_total = calculate_sum(player)
+
   loop do
     choice = hit?
 
     if choice == 'hit'
       hit(deck, player)
       display_table(dealer, player)
+      player_total = calculate_sum(player)
     end
 
-    break if choice == 'stay' || busted?(player)
+    break if choice == 'stay' || busted?(player_total)
   end
 
-  if busted?(player)
+  if busted?(player_total)
     show_cards(dealer, player)
     prompt("Busted. You lose.")
     next if play_again?
@@ -152,15 +155,16 @@ loop do
 
   counter = 0
   loop do
-    break if calculate_sum(dealer) >= 17
+    break if dealer_total >= 17
     counter += 1
     hit(deck, dealer)
     display_table(dealer, player)
     prompt("Dealer hits.", counter)
+    dealer_total = calculate_sum(dealer)
     sleep(2)
   end
 
-  if busted?(dealer)
+  if busted?(dealer_total)
     show_cards(dealer, player)
     prompt("Dealer busted. You win!")
   else
@@ -168,17 +172,17 @@ loop do
     sleep(2)
 
     show_cards(dealer, player)
-    winner = determine_winner(dealer, player)
+    winner = determine_winner(dealer_total, player_total)
 
     if winner == 'tie'
-      prompt("It's a tie. You have #{calculate_sum(player)} and dealer has"\
-      " #{calculate_sum(dealer)}.")
+      prompt("It's a tie. You have #{player_total} and dealer has"\
+      " #{dealer_total}.")
     elsif winner == 'player'
-      prompt("You win! You have #{calculate_sum(player)} and dealer has"\
-      " #{calculate_sum(dealer)}.")
+      prompt("You win! You have #{player_total} and dealer has"\
+      " #{dealer_total}.")
     else
-      prompt("You lost. You have #{calculate_sum(player)} and dealer has"\
-      " #{calculate_sum(dealer)}.")
+      prompt("You lost. You have #{player_total} and dealer has"\
+      " #{dealer_total}.")
     end
   end
 
