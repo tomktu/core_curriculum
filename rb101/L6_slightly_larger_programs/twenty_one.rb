@@ -93,7 +93,11 @@ end
 def determine_winner(dealer_total, player_total)
   differential = player_total - dealer_total
 
-  if differential == 0
+  if busted?(player_total)
+    'player_busted'
+  elsif busted?(dealer_total)
+    'dealer_busted'
+  elsif differential == 0
     'tie'
   elsif differential > 0
     'player'
@@ -101,6 +105,32 @@ def determine_winner(dealer_total, player_total)
     'dealer'
   end
 end
+
+# rubocop: disable Metrics/MethodLength
+def display_result(dealer_total, player_total)
+  winner = determine_winner(dealer_total, player_total)
+
+  puts "=============="
+  case winner
+  when 'player_busted'
+    prompt("Busted, you lose. You have #{player_total} and dealer has"\
+    " #{dealer_total}.")
+  when 'dealer_busted'
+    prompt("Dealer busted, you win! You have #{player_total} and dealer has"\
+    " #{dealer_total}.")
+  when 'tie'
+    prompt("It's a tie. You have #{player_total} and dealer has"\
+    " #{dealer_total}.")
+  when 'player'
+    prompt("You win! You have #{player_total} and dealer has"\
+    " #{dealer_total}.")
+  else
+    prompt("You lost. You have #{player_total} and dealer has"\
+    " #{dealer_total}.")
+  end
+  puts "=============="
+end
+# rubocop: enable Metrics/MethodLength
 
 def play_again?
   choice = ''
@@ -145,12 +175,12 @@ loop do
 
   if busted?(player_total)
     show_cards(dealer, player)
-    prompt("Busted. You lose.")
+    display_result(dealer_total, player_total)
     next if play_again?
     break
   else
     prompt("You chose to stay.")
-    sleep(2)
+    sleep(3)
   end
 
   counter = 0
@@ -158,33 +188,19 @@ loop do
     break if dealer_total >= 17
     counter += 1
     hit(deck, dealer)
-    display_table(dealer, player)
+    show_cards(dealer, player)
     prompt("Dealer hits.", counter)
     dealer_total = calculate_sum(dealer)
-    sleep(2)
+    sleep(3)
   end
 
-  if busted?(dealer_total)
-    show_cards(dealer, player)
-    prompt("Dealer busted. You win!")
-  else
+  if !(busted?(dealer_total))
     prompt("Dealer chose to stay.")
-    sleep(2)
-
-    show_cards(dealer, player)
-    winner = determine_winner(dealer_total, player_total)
-
-    if winner == 'tie'
-      prompt("It's a tie. You have #{player_total} and dealer has"\
-      " #{dealer_total}.")
-    elsif winner == 'player'
-      prompt("You win! You have #{player_total} and dealer has"\
-      " #{dealer_total}.")
-    else
-      prompt("You lost. You have #{player_total} and dealer has"\
-      " #{dealer_total}.")
-    end
+    sleep(3)
   end
+
+  show_cards(dealer, player)
+  display_result(dealer_total, player_total)
 
   break unless play_again?
 end
