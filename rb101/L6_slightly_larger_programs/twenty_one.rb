@@ -1,4 +1,9 @@
-require 'pry'
+#-----------------------------------------------------------------------------
+# CONSTANTS
+#-----------------------------------------------------------------------------
+
+WHATEVER_ONE = 21
+DEALER_HIT_THRESHOLD = 17
 
 #-----------------------------------------------------------------------------
 # METHODS
@@ -64,7 +69,7 @@ def hit(deck, persons_deck)
 end
 
 def busted?(sum_cards)
-  sum_cards > 21
+  sum_cards > WHATEVER_ONE
 end
 
 def calculate_sum(persons_deck)
@@ -158,7 +163,7 @@ end
 
 loop do
   clear_screen
-  prompt("Welcome to 21!")
+  prompt("Welcome to #{WHATEVER_ONE}!")
   score = { dealer: 0, player: 0 }
 
   loop do
@@ -202,7 +207,7 @@ loop do
 
     counter = 0
     loop do
-      break if dealer_total >= 17
+      break if dealer_total >= DEALER_HIT_THRESHOLD
       counter += 1
       clear_screen
       hit(deck, dealer)
