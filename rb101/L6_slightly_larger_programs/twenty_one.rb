@@ -27,14 +27,16 @@ def deal_cards(deck, dealer_deck, player_deck)
   end
 end
 
-def display_table(dealer_deck, player_deck)
-  clear_screen
+def display_table(score, dealer_deck, player_deck)
+  prompt("The current score is: You - #{score[:player]}, Dealer -"\
+  " #{score[:dealer]}")
   prompt("Dealer has: #{join_and(false, dealer_deck)}")
   prompt("You have: #{join_and(true, player_deck)}")
 end
 
-def show_cards(dealer_deck, player_deck)
-  clear_screen
+def show_cards(score, dealer_deck, player_deck)
+  prompt("The current score is: You - #{score[:player]}, Dealer -"\
+  " #{score[:dealer]}")
   prompt("Dealer has: #{join_and(true, dealer_deck)}")
   prompt("You have: #{join_and(true, player_deck)}")
 end
@@ -146,61 +148,99 @@ end
 def clear_screen
   system('clear') || system('cls')
 end
+
+def increment_score(score, player)
+  score[player] += 1
+end
 #-----------------------------------------------------------------------------
 # PROGRAM
 #-----------------------------------------------------------------------------
 
 loop do
-  deck = initialize_deck
-  dealer = []
-  player = []
-
-  deal_cards(deck, dealer, player)
-  display_table(dealer, player)
-
-  dealer_total = calculate_sum(dealer)
-  player_total = calculate_sum(player)
+  clear_screen
+  prompt("Welcome to 21!")
+  score = { dealer: 0, player: 0 }
 
   loop do
-    choice = hit?
+    deck = initialize_deck
+    dealer = []
+    player = []
 
-    if choice == 'hit'
-      hit(deck, player)
-      display_table(dealer, player)
-      player_total = calculate_sum(player)
+    deal_cards(deck, dealer, player)
+    display_table(score, dealer, player)
+
+    dealer_total = calculate_sum(dealer)
+    player_total = calculate_sum(player)
+
+    loop do
+      choice = hit?
+
+      if choice == 'hit'
+        clear_screen
+        hit(deck, player)
+        display_table(score, dealer, player)
+        player_total = calculate_sum(player)
+      end
+
+      break if choice == 'stay' || busted?(player_total)
     end
 
-    break if choice == 'stay' || busted?(player_total)
-  end
+    if busted?(player_total)
+      clear_screen
+      increment_score(score, :dealer)
+      show_cards(score, dealer, player)
+      display_result(dealer_total, player_total)
 
-  if busted?(player_total)
-    show_cards(dealer, player)
+      sleep(5)
+      break if score[:player] == 5 || score[:dealer] == 5
+      clear_screen
+      next
+    else
+      prompt("You chose to stay.")
+      sleep(3)
+    end
+
+    counter = 0
+    loop do
+      break if dealer_total >= 17
+      counter += 1
+      clear_screen
+      hit(deck, dealer)
+      show_cards(score, dealer, player)
+      prompt("Dealer hits.", counter)
+      dealer_total = calculate_sum(dealer)
+      sleep(3)
+    end
+
+    if busted?(dealer_total)
+      increment_score(score, :player)
+    else
+      prompt("Dealer chose to stay.")
+      sleep(3)
+    end
+
+    winner = determine_winner(dealer_total, player_total)
+    case winner
+    when 'player'
+      increment_score(score, :player)
+    when 'dealer'
+      increment_score(score, :dealer)
+    end
+
+    clear_screen
+    show_cards(score, dealer, player)
     display_result(dealer_total, player_total)
-    next if play_again?
-    break
+    sleep(5)
+
+    break if score[:player] == 5 || score[:dealer] == 5
+    clear_screen
+  end
+
+  if score[:player] == 5
+    prompt("Congrats, you are the ultimate winner!")
   else
-    prompt("You chose to stay.")
-    sleep(3)
+    prompt("Dealer is the first to 5 wins. Better luck next time.")
   end
-
-  counter = 0
-  loop do
-    break if dealer_total >= 17
-    counter += 1
-    hit(deck, dealer)
-    show_cards(dealer, player)
-    prompt("Dealer hits.", counter)
-    dealer_total = calculate_sum(dealer)
-    sleep(3)
-  end
-
-  if !(busted?(dealer_total))
-    prompt("Dealer chose to stay.")
-    sleep(3)
-  end
-
-  show_cards(dealer, player)
-  display_result(dealer_total, player_total)
 
   break unless play_again?
 end
