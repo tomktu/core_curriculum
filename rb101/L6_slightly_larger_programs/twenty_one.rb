@@ -90,9 +90,9 @@ end
 
 def hit?
   loop do
-    prompt("Hit or Stay?")
+    prompt("(H)it or (S)tay?")
     choice = gets.chomp.downcase
-    return choice if %w(hit stay).include?(choice)
+    return choice if %w(h s).include?(choice)
     prompt("Invalid entry, please try again.")
   end
 end
@@ -180,14 +180,14 @@ loop do
     loop do
       choice = hit?
 
-      if choice == 'hit'
+      if choice == 'h'
         clear_screen
         hit(deck, player)
         display_table(score, dealer, player)
         player_total = calculate_sum(player)
       end
 
-      break if choice == 'stay' || busted?(player_total)
+      break if choice == 's' || busted?(player_total)
     end
 
     if busted?(player_total)
