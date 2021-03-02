@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
 # CONSTANTS
 #-----------------------------------------------------------------------------
-
+require 'pry'
 WHATEVER_ONE = 21
 DEALER_HIT_THRESHOLD = 17
 
@@ -12,16 +12,18 @@ def prompt(msg, count=1)
   count.times { puts "=> #{msg}" }
 end
 
+# rubocop: disable Style/SymbolProc
 def initialize_deck
+  suits = ['♤', '♡', '♢', '♧']
   cards = ['Ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King']
-  deck = []
 
-  cards.each do |card|
-    deck.concat([card] * 4)
+  deck = cards.product(suits).map do |card|
+    card.join
   end
 
   deck.shuffle
 end
+# rubocop: enable Style/SymbolProc
 
 def deal_cards(deck, dealer_deck, player_deck)
   count = 0
@@ -46,7 +48,7 @@ def show_cards(score, dealer_deck, player_deck)
   prompt("You have: #{join_and(true, player_deck)}")
 end
 
-def join_and(show_all, players_deck, sep=', ', word='and')
+def join_and(show_all, players_deck, sep=' , ', word='and')
   if show_all
     if players_deck.size == 2
       return players_deck.join(" #{word} ")
@@ -72,8 +74,19 @@ def busted?(sum_cards)
   sum_cards > WHATEVER_ONE
 end
 
+def get_card_values(persons_deck)
+  persons_deck.map do |card|
+    if %w(A J Q K).include?(card[0])
+      card[0, card.length - 1]
+    else
+      card[0, card.length - 1].to_i
+    end
+  end
+end
+
 def calculate_sum(persons_deck)
-  aces, other_cards = persons_deck.partition { |card| card == 'Ace' }
+  card_values = get_card_values(persons_deck)
+  aces, other_cards = card_values.partition { |card| card == 'Ace' }
 
   sum_other_cards = other_cards.map do |card|
     %w(Jack King Queen).include?(card) ? 10 : card
