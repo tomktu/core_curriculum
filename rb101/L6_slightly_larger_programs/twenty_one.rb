@@ -1,7 +1,8 @@
+require 'io/console'
+require 'pry'
 #-----------------------------------------------------------------------------
 # CONSTANTS
 #-----------------------------------------------------------------------------
-require 'pry'
 WHATEVER_ONE = 21
 DEALER_HIT_THRESHOLD = 17
 
@@ -213,7 +214,8 @@ loop do
       show_cards(score, dealer, player)
       display_result(dealer_total, player_total)
 
-      sleep(5)
+      prompt("Press any key to continue.")
+      STDIN.getch
       break if score[:player] == 5 || score[:dealer] == 5
       clear_screen
       next
@@ -252,8 +254,9 @@ loop do
     clear_screen
     show_cards(score, dealer, player)
     display_result(dealer_total, player_total)
-    sleep(5)
 
+    prompt("Press any key to continue.")
+    STDIN.getch
     break if score[:player] == 5 || score[:dealer] == 5
     clear_screen
   end
