@@ -171,6 +171,11 @@ end
 def increment_score(score, player)
   score[player] += 1
 end
+
+def continue_game
+  prompt("Press any key to continue.")
+  STDIN.getch
+end
 #-----------------------------------------------------------------------------
 # PROGRAM
 #-----------------------------------------------------------------------------
@@ -214,8 +219,7 @@ loop do
       show_cards(score, dealer, player)
       display_result(dealer_total, player_total)
 
-      prompt("Press any key to continue.")
-      STDIN.getch
+      continue_game
       break if score[:player] == 5 || score[:dealer] == 5
       clear_screen
       next
@@ -255,8 +259,7 @@ loop do
     show_cards(score, dealer, player)
     display_result(dealer_total, player_total)
 
-    prompt("Press any key to continue.")
-    STDIN.getch
+    continue_game
     break if score[:player] == 5 || score[:dealer] == 5
     clear_screen
   end
