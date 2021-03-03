@@ -170,6 +170,19 @@ def continue_game
   prompt("Press any key to continue.")
   STDIN.getch
 end
+
+def match_over?(score)
+  score[:player] == WINNING_SCORE || score[:dealer] == WINNING_SCORE
+end
+
+def display_grand_winner(score)
+  if score[:player] == WINNING_SCORE
+    prompt("Congrats, you are the ultimate winner!")
+  else
+    prompt("Dealer is the first to 5 wins. Better luck next time.")
+  end
+end
+
 #-----------------------------------------------------------------------------
 # PROGRAM
 #-----------------------------------------------------------------------------
@@ -213,7 +226,7 @@ loop do
       display_table(score, dealer, player, true)
       display_result(dealer_total, player_total)
 
-      break if score[:player] == 5 || score[:dealer] == 5
+      break if match_over?(score)
       continue_game
       clear_screen
       next
@@ -253,16 +266,12 @@ loop do
     display_table(score, dealer, player, true)
     display_result(dealer_total, player_total)
 
-    break if score[:player] == 5 || score[:dealer] == 5
+    break if match_over?(score)
     continue_game
     clear_screen
   end
 
-  if score[:player] == 5
-    prompt("Congrats, you are the ultimate winner!")
-  else
-    prompt("Dealer is the first to 5 wins. Better luck next time.")
-  end
+  display_grand_winner(score)
 
   break unless play_again?
 end
