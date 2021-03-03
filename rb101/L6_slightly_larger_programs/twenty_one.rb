@@ -5,6 +5,7 @@ require 'pry'
 #-----------------------------------------------------------------------------
 WHATEVER_ONE = 21
 DEALER_HIT_THRESHOLD = 17
+WINNING_SCORE = 5
 
 #-----------------------------------------------------------------------------
 # METHODS
@@ -185,7 +186,7 @@ loop do
   prompt("Welcome to #{WHATEVER_ONE}!")
   prompt("The total hand value needed to win is #{WHATEVER_ONE}.")
   prompt("Dealer will hit until its total is at least #{DEALER_HIT_THRESHOLD}.")
-  prompt("First person to 5 wins is the grand winner!")
+  prompt("First person to #{WINNING_SCORE} wins is the grand winner!")
   prompt("-------------------------------------------")
   score = { dealer: 0, player: 0 }
 
