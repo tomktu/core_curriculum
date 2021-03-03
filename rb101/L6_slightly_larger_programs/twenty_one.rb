@@ -96,7 +96,7 @@ def calculate_sum(persons_deck)
   end
 end
 
-def get_choice
+def retrieve_choice
   loop do
     prompt("(H)it or (S)tay?")
     choice = gets.chomp.downcase
@@ -195,7 +195,7 @@ loop do
     player_total = calculate_sum(player)
 
     loop do
-      choice = get_choice
+      choice = retrieve_choice
 
       if choice == 'h'
         clear_screen
