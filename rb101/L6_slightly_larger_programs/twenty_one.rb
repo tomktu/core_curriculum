@@ -36,17 +36,10 @@ def deal_cards(deck, dealer_deck, player_deck)
   end
 end
 
-def display_table(score, dealer_deck, player_deck)
+def display_table(score, dealer_deck, player_deck, show_dealer_hand=false)
   prompt("The current score is: You - #{score[:player]}, Dealer -"\
   " #{score[:dealer]}")
-  prompt("Dealer has: #{join_and(false, dealer_deck)}")
-  prompt("You have: #{join_and(true, player_deck)}")
-end
-
-def show_cards(score, dealer_deck, player_deck)
-  prompt("The current score is: You - #{score[:player]}, Dealer -"\
-  " #{score[:dealer]}")
-  prompt("Dealer has: #{join_and(true, dealer_deck)}")
+  prompt("Dealer has: #{join_and(show_dealer_hand, dealer_deck)}")
   prompt("You have: #{join_and(true, player_deck)}")
 end
 
@@ -217,11 +210,11 @@ loop do
     if busted?(player_total)
       clear_screen
       increment_score(score, :dealer)
-      show_cards(score, dealer, player)
+      display_table(score, dealer, player, true)
       display_result(dealer_total, player_total)
 
-      continue_game
       break if score[:player] == 5 || score[:dealer] == 5
+      continue_game
       clear_screen
       next
     else
@@ -235,7 +228,7 @@ loop do
       counter += 1
       clear_screen
       hit(deck, dealer)
-      show_cards(score, dealer, player)
+      display_table(score, dealer, player, true)
       prompt("Dealer hits.", counter)
       dealer_total = calculate_sum(dealer)
       sleep(3)
@@ -257,11 +250,11 @@ loop do
     end
 
     clear_screen
-    show_cards(score, dealer, player)
+    display_table(score, dealer, player, true)
     display_result(dealer_total, player_total)
 
-    continue_game
     break if score[:player] == 5 || score[:dealer] == 5
+    continue_game
     clear_screen
   end
 
